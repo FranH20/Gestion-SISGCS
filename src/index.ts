@@ -4,7 +4,8 @@ import morgan from 'morgan'
 import cors from 'cors'
 import {createConnection} from 'typeorm'
 
-import userRoutes from './routes/user.routes'
+import Allroutes from './routes/index.routes'
+const PORT = process.env.PORT || 3000;
 
 const app = express()
 createConnection();
@@ -14,7 +15,6 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 // rutas
-app.use(userRoutes);
+app.use('/',Allroutes);
 
-app.listen(3000);
-console.log('Server escuchando ' , 3000);
+app.listen(PORT, () => console.log(`Server corriendo en el puerto ${PORT}`));
