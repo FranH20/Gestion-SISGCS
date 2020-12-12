@@ -1,6 +1,6 @@
 import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, UpdateDateColumn,CreateDateColumn} from 'typeorm'
 import {sgcsroltrol} from './Role'
-import {MinLength,IsNotEmpty,IsEmail,IsInt,Min,Max,MaxLength} from 'class-validator'
+import {MinLength,IsNotEmpty,IsEmail,IsInt,Min,MaxLength} from 'class-validator'
 import * as bcrypt from 'bcryptjs'
 
 @Entity()
@@ -22,10 +22,11 @@ export class sgcsusutusuario{
     @MaxLength(191)
     USUApellido: string;
 
-    @Column({ type: "varchar", length: 100 })
-    @MinLength(1)
-    @MaxLength(101)
-    USUtipo: string;
+    @Column({ type: "int", width: 8 })
+    @IsNotEmpty()
+    @IsInt()
+    @Min(1)
+    USUtipo: number;
 
     @Column({ type: "varchar", length: 190, unique: true })
     @IsEmail()

@@ -2,8 +2,9 @@ import {Request,Response,NextFunction} from 'express'
 import { getRepository } from 'typeorm';
 import {sgcsusutusuario} from '../entity/User'
 
-export const checkTipo = (tipos:Array<string>) => {
+export const checkTipo = (tipos:Array<number>) => {
     return async (req: Request, res:Response, next:NextFunction) => {
+        console.log(res.locals.jwtPayload)
         const {userId} = res.locals.jwtPayload;
         const userRepository = getRepository(sgcsusutusuario);
         let user: sgcsusutusuario;

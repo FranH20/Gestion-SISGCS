@@ -5,6 +5,8 @@ import {checkTipo} from '../middleware/tipo'
 const router = Router()
 //login
 router.post('/login', AuthController.login)
-//cmabiar contrasenia
-router.post('/change-password',[checkJwt,checkTipo(['Gestor de proyecto'])],AuthController.changePassword)
+//cambiar contrasenia
+router.post('/change-password',[checkJwt,checkTipo([1])],AuthController.changePassword)
+//obtener perfil
+router.post('/profile', [checkJwt],AuthController.profile)
 export default router

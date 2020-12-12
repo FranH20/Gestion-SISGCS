@@ -22,8 +22,12 @@ class AuthController {
         if(!usuario.checkPassword(USUcontrasenia)){
             return res.status(400).json({ message:'Username or password incorrect !!'});
         }
-        const token = jwt.sign({userId:usuario.id,username:usuario.USUnombre},config.jwtSecret,{expiresIn:'1h'})
-        res.json({message:'OK',token});
+        const token = jwt.sign({userId:usuario.id,username:usuario.USUnombre, email:usuario.USUemail},config.jwtSecret,{expiresIn:'5h'})
+        res.json({message:'OK',token, userTipo: usuario.USUtipo});
+    }
+    static profile = async (req: Request, res: Response) => {
+        const {userId,username,email} = res.locals.jwtPayload;
+        res.json({userId,username,email})
     }
     static changePassword = async (req: Request, res: Response) => {
         const {userId} = res.locals.jwtPayload;
