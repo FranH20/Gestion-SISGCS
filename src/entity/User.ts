@@ -1,7 +1,8 @@
-import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, UpdateDateColumn,CreateDateColumn} from 'typeorm'
+import {Entity, Column, PrimaryGeneratedColumn, ManyToOne,OneToMany, UpdateDateColumn,CreateDateColumn} from 'typeorm'
 import {sgcsroltrol} from './Role'
-import {MinLength,IsNotEmpty,IsEmail,IsInt,Min,MaxLength} from 'class-validator'
+import {IsNotEmpty,IsEmail,IsInt,Min,MaxLength} from 'class-validator'
 import * as bcrypt from 'bcryptjs'
+import {sgcsprupusuarioproyecto} from './UsuarioProyecto'
 
 @Entity()
 export class sgcsusutusuario{
@@ -53,6 +54,9 @@ export class sgcsusutusuario{
     @Column()
     @UpdateDateColumn()
     updateAt: Date;
+
+    @OneToMany(type => sgcsprupusuarioproyecto, usuarioproyecto => usuarioproyecto.usu)
+    pru:sgcsprupusuarioproyecto[]
 
     hashPassword(): void{
         const salt = bcrypt.genSaltSync(10);
