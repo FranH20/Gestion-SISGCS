@@ -8,7 +8,7 @@ import Allroutes from './routes/index.routes'
 const PORT = process.env.PORT || 3000;
 
 const app = express()
-createConnection();
+createConnection().catch(error => console.log(`Gestor de base de datos MySql desactivada ${error}`));;
 //middleware
 app.use(cors());
 app.use(morgan('dev'));

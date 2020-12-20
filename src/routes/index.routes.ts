@@ -7,7 +7,11 @@ import etapa from './etapa.routes'
 import entregable from './entregable.routes'
 import proyecto from './proyecto.routes'
 import usuarioProyecto from './usuarioProyecto.routes'
-import solicitudCambios from './solicitudCambio.routes'
+import solicitudCambio from './solicitudCambio.routes'
+import entregableProyecto from './entregableProyecto.routes'
+import revision from './revision.routes'
+import tarea from './tarea.routes'
+import rol from './rol.routes'
 
 const routes = Router();
 
@@ -18,6 +22,10 @@ routes.use('/etapas',etapa);
 routes.use('/entregables',entregable);
 routes.use('/proyectos',proyecto);
 routes.use('/usuariosProyectos',usuarioProyecto);
-routes.use('/solicitudCambios',solicitudCambios);
+routes.use('/solicitudCambios',solicitudCambio);
+routes.use('/entregableProyectos',entregableProyecto);
+routes.use('/revisiones',revision);
+routes.use('/tareas',tarea);
+routes.use('/roles',rol);
 
 export default routes;

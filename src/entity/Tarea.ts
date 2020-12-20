@@ -21,10 +21,11 @@ export class sgcstarptarea{
     @MaxLength(251)
     TARdescripcion: string;
 
-    @Column({ type: "boolean"})
-    TARestado: boolean;
+    @Column({ type: "char", length:1})
+    @MaxLength(2)
+    TARestado: string;
 
-    @Column({ type: "int", width: 3 , unique:true})
+    @Column({ type: "int", width: 3})
     @IsNotEmpty()
     @IsInt()
     TARprogreso: number;
