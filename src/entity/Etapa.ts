@@ -11,7 +11,10 @@ export class sgcsetapetapa{
     @MaxLength(191)
     ETAnombre: string;
 
-    @ManyToOne(type => sgcsmetpmetodologia, metologia => metologia.eta)
+    // @Column({ nullable: true })
+    // metId: number;
+
+    @ManyToOne(type => sgcsmetpmetodologia, metodologia => metodologia.eta)
     @IsNotEmpty()
     @IsInt()
     met:sgcsmetpmetodologia
