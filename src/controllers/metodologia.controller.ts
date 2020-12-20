@@ -93,6 +93,7 @@ export class MetodologiaController {
         metodologiaRepository.delete(id);
         return res.status(201).json({message:'Metodologia eliminada'})
     };
+
 }
 
 export default MetodologiaController

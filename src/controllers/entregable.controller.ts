@@ -93,6 +93,16 @@ export class EntregableController {
         entregableRepository.delete(id);
         return res.status(201).json({message:'Entregable eliminada'})
     };
+
+    // static getListaEntregable = async (req:Request, res:Response) => {
+    //     const metodologiaRepository = getRepository(sgcsetgpentregable);
+    //     try{
+    //         metodologiaRepository.createQueryBuilder("sgcsetgpentregable","etg")
+    //         .innerJoinAndSelect("user.photos", "photo", "photo.isRemoved = :isRemoved", { isRemoved: false })
+    //     }catch(e){
+    //         return res.status(404).json({message:'Algo esta mal!'});
+    //     }
+    // }
 }
 
 export default EntregableController

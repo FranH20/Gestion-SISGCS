@@ -46,14 +46,18 @@ export class ProyectoController {
             return res.status(400).json(errors);
         }
         
-        const proyectoRepository = getRepository(sgcspropproyecto);  
+        const proyectoRepository = getRepository(sgcspropproyecto); 
+        let idProyecto = 0 
         try{
-            await proyectoRepository.save(proyecto)
+            await proyectoRepository.save(proyecto).then(proyecto => {
+                idProyecto = proyecto.id;
+                console.log("Proyecto añadido de id ",proyecto.id)
+            })
         }
         catch(e){
             return res.status(409).json({message:'La proyecto ya existe'});
         }
-        res.send('Proyecto creado');
+        res.send({'message':'Proyecto creado',"idProyecto":idProyecto});
     };
     
     static updateProyecto = async (req:Request,res:Response) => {
