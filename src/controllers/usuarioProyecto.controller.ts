@@ -10,6 +10,7 @@ export class UsuarioProyectoController {
         const usuarioProyecto = new sgcsprupusuarioproyecto();
         usuarioProyecto.usu = usu
         usuarioProyecto.pro = pro
+        usuarioProyecto.PRUestado = true
 
         const validationOpt = {validationError:{target:false,value:false}};
         const errors = await validate(usuarioProyecto,validationOpt);
@@ -36,6 +37,7 @@ export class UsuarioProyectoController {
             usuarioProyecto = await usuarioProyectoRepository.findOneOrFail(id);
             usuarioProyecto.usu = usu
             usuarioProyecto.pro = pro
+            usuarioProyecto.PRUestado = true
         }
         catch(e){
             return res.status(404).json({message:'El UsuarioProyecto no fue encontrado'});
@@ -54,19 +56,45 @@ export class UsuarioProyectoController {
         res.status(201).json({message:'UsuarioProyecto actualizado'})
     };
     
+    // static deleteUsuarioProyecto = async (req:Request,res:Response) => {
+    //     const {id} = req.params;
+    //     const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);
+    //     let usuarioProyecto: sgcsprupusuarioproyecto;
+    //     try{
+    //         usuarioProyecto = await usuarioProyectoRepository.findOneOrFail(id);
+    //     }
+    //     catch(e){
+    //         return res.status(404).json({message:'El UsuarioProyecto no existe'});
+    //     }
+    //     usuarioProyectoRepository.delete(id);
+    //     return res.status(201).json({message:'UsuarioProyecto eliminado'})
+    // };
+
     static deleteUsuarioProyecto = async (req:Request,res:Response) => {
+        let usuarioProyecto;
         const {id} = req.params;
         const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);
-        let usuarioProyecto: sgcsprupusuarioproyecto;
         try{
             usuarioProyecto = await usuarioProyectoRepository.findOneOrFail(id);
+            usuarioProyecto.PRUestado = false
         }
         catch(e){
-            return res.status(404).json({message:'El UsuarioProyecto no existe'});
+            return res.status(404).json({message:'El UsuarioProyecto no fue encontrado'});
         }
-        usuarioProyectoRepository.delete(id);
-        return res.status(201).json({message:'UsuarioProyecto eliminado'})
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(usuarioProyecto,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await usuarioProyectoRepository.save(usuarioProyecto)
+        }
+        catch(e){
+            return res.status(404).json({message:'El UsuarioProyecto ya existe'});
+        }
+        res.status(201).json({message:'UsuarioProyecto desactivado'})
     };
+    
 }
 
 export default UsuarioProyectoController

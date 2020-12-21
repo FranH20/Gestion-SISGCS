@@ -26,6 +26,9 @@ export class sgcspropproyecto{
     @Column({type: "date"})
     PROfechafin: Date;
 
+    @Column({ type: "boolean"})
+    PROvalor: boolean;
+
     @OneToMany(type => sgcsprupusuarioproyecto, usuarioproyecto => usuarioproyecto.pro)
     pru:sgcsprupusuarioproyecto[]
 

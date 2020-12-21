@@ -8,7 +8,7 @@ export class TareaController {
         const tareaRepository = getRepository(sgcstarptarea);
         let tareas;
         try {
-            tareas = await tareaRepository.find();
+            tareas = await tareaRepository.find({where:{"TARvalor":1}});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -39,6 +39,7 @@ export class TareaController {
         tarea.TARfechafin = TARfechafin
         tarea.TARdescripcion = TARdescripcion
         tarea.TARestado = TARestado
+        tarea.TARvalor = true
         tarea.TARprogreso = TARprogreso
         tarea.TARarchivoequipo = TARarchivoequipo
         tarea.pre = pre
@@ -70,6 +71,7 @@ export class TareaController {
             tarea.TARnombre = TARnombre
             tarea.TARfechainicio = TARfechainicio
             tarea.TARfechafin = TARfechafin
+            tarea.TARvalor = true
             tarea.TARdescripcion = TARdescripcion
             tarea.TARestado = TARestado
             tarea.TARprogreso = TARprogreso
@@ -94,18 +96,42 @@ export class TareaController {
         res.status(201).json({message:'Tarea actualizada'})
     };
     
+    // static deleteTarea = async (req:Request,res:Response) => {
+    //     const {id} = req.params;
+    //     const tareaRepository = getRepository(sgcstarptarea);
+    //     let tarea: sgcstarptarea;
+    //     try{
+    //         tarea = await tareaRepository.findOneOrFail(id);
+    //     }
+    //     catch(e){
+    //         return res.status(404).json({message:'La tarea no existe'});
+    //     }
+    //     tareaRepository.delete(id);
+    //     return res.status(201).json({message:'Tarea eliminada'})
+    // };
     static deleteTarea = async (req:Request,res:Response) => {
+        let tarea;
         const {id} = req.params;
         const tareaRepository = getRepository(sgcstarptarea);
-        let tarea: sgcstarptarea;
         try{
             tarea = await tareaRepository.findOneOrFail(id);
+            tarea.TARvalor = false
         }
         catch(e){
-            return res.status(404).json({message:'La tarea no existe'});
+            return res.status(404).json({message:'La tarea no fue encontrado'});
         }
-        tareaRepository.delete(id);
-        return res.status(201).json({message:'Tarea eliminada'})
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(tarea,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await tareaRepository.save(tarea)
+        }
+        catch(e){
+            return res.status(404).json({message:'La tarea ya existe'});
+        }
+        res.status(201).json({message:'Tarea desactivada'})
     };
 }
 

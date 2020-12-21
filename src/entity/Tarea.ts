@@ -34,6 +34,9 @@ export class sgcstarptarea{
     @MaxLength(251)
     TARarchivoequipo: string;
 
+    @Column({ type: "boolean"})
+    TARvalor: boolean;
+
     @ManyToOne(type => sgcsprepentregableproyecto, entregableProyecto => entregableProyecto.tar)
     pre:sgcsprepentregableproyecto
 

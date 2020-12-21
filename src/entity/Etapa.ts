@@ -11,6 +11,9 @@ export class sgcsetapetapa{
     @MaxLength(191)
     ETAnombre: string;
 
+    @Column({ type: "boolean"})
+    ETAestado: boolean;
+
     // @Column({ nullable: true })
     // metId: number;
 

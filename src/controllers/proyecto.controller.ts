@@ -8,7 +8,7 @@ export class ProyectoController {
         const proyectoRepository = getRepository(sgcspropproyecto);
         let proyectos;
         try {
-            proyectos = await proyectoRepository.find();
+            proyectos = await proyectoRepository.find({where:{"PROvalor":1}});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -37,6 +37,7 @@ export class ProyectoController {
         proyecto.PROnombre = PROnombre
         proyecto.PROdescripcion = PROdescripcion
         proyecto.PROestado = PROestado
+        proyecto.PROvalor = true
         proyecto.PROfechainicio = PROfechainicio
         proyecto.PROfechafin = PROfechafin
 
@@ -70,6 +71,7 @@ export class ProyectoController {
             proyecto.PROnombre = PROnombre
             proyecto.PROdescripcion = PROdescripcion
             proyecto.PROestado = PROestado
+            proyecto.PROvalor = true
             proyecto.PROfechainicio = PROfechainicio
             proyecto.PROfechafin = PROfechafin
         }
@@ -90,18 +92,42 @@ export class ProyectoController {
         res.status(201).json({message:'Proyecto actualizado'})
     };
     
+    // static deleteProyecto = async (req:Request,res:Response) => {
+    //     const {id} = req.params;
+    //     const proyectoRepository = getRepository(sgcspropproyecto);
+    //     let proyecto: sgcspropproyecto;
+    //     try{
+    //         proyecto = await proyectoRepository.findOneOrFail(id);
+    //     }
+    //     catch(e){
+    //         return res.status(404).json({message:'La proyecto no existe'});
+    //     }
+    //     proyectoRepository.delete(id);
+    //     return res.status(201).json({message:'Proyecto eliminada'})
+    // };
     static deleteProyecto = async (req:Request,res:Response) => {
+        let proyecto;
         const {id} = req.params;
         const proyectoRepository = getRepository(sgcspropproyecto);
-        let proyecto: sgcspropproyecto;
         try{
             proyecto = await proyectoRepository.findOneOrFail(id);
+            proyecto.PROvalor = false
         }
         catch(e){
-            return res.status(404).json({message:'La proyecto no existe'});
+            return res.status(404).json({message:'La proyecto no fue encontrado'});
         }
-        proyectoRepository.delete(id);
-        return res.status(201).json({message:'Proyecto eliminada'})
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(proyecto,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await proyectoRepository.save(proyecto)
+        }
+        catch(e){
+            return res.status(404).json({message:'La proyecto ya existe'});
+        }
+        res.status(201).json({message:'Proyecto fue desactivado'})
     };
 }
 

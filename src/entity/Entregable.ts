@@ -11,6 +11,9 @@ export class sgcsetgpentregable{
     @MaxLength(191)
     ETGnombre: string;
 
+    @Column({ type: "boolean"})
+    ETGetapa: boolean;
+
     @ManyToOne(type => sgcsetapetapa, etapa => etapa.etg)
     @IsNotEmpty()
     @IsInt()

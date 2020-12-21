@@ -9,7 +9,7 @@ export class UserController{
         const userRepository = getRepository(sgcsusutusuario);
         let users;
         try {
-            users = await userRepository.find();
+            users = await userRepository.find({where:{"USUestado":1}});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -94,18 +94,42 @@ export class UserController{
         res.status(201).json({message:'Usuario actualizado'})
     }
     
+    // static deleteUser = async (req:Request,res:Response) => {
+    //     const {id} = req.params;
+    //     const userRepository = getRepository(sgcsusutusuario);
+    //     let user: sgcsusutusuario;
+    //     try{
+    //         user = await userRepository.findOneOrFail(id);
+    //     }
+    //     catch(e){
+    //         return res.status(404).json({message:'El usuario no existe'});
+    //     }
+    //     userRepository.delete(id);
+    //     return res.status(201).json({message:'Usuario eliminado'})
+    // }
     static deleteUser = async (req:Request,res:Response) => {
+        let user;
         const {id} = req.params;
         const userRepository = getRepository(sgcsusutusuario);
-        let user: sgcsusutusuario;
         try{
             user = await userRepository.findOneOrFail(id);
+            user.USUestado = false
         }
         catch(e){
-            return res.status(404).json({message:'El usuario no existe'});
+            return res.status(404).json({message:'El usuario no fue encontrado'});
         }
-        userRepository.delete(id);
-        return res.status(201).json({message:'Usuario eliminado'})
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(user,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await userRepository.save(user)
+        }
+        catch(e){
+            return res.status(404).json({message:'El usuario ya existe'});
+        }
+        res.status(201).json({message:'Usuario fue desactivado'})
     }
 }
 

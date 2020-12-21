@@ -8,7 +8,7 @@ export class RevisionController {
         const revisionRepository = getRepository(sgcsrevpprevision);
         let revisions;
         try {
-            revisions = await revisionRepository.find();
+            revisions = await revisionRepository.find({where:{"REVestado":1}});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -90,18 +90,43 @@ export class RevisionController {
         res.status(201).json({message:'Revision actualizada'})
     };
     
+    // static deleteRevision = async (req:Request,res:Response) => {
+    //     const {id} = req.params;
+    //     const revisionRepository = getRepository(sgcsrevpprevision);
+    //     let revision: sgcsrevpprevision;
+    //     try{
+    //         revision = await revisionRepository.findOneOrFail(id);
+    //     }
+    //     catch(e){
+    //         return res.status(404).json({message:'La revision no existe'});
+    //     }
+    //     revisionRepository.delete(id);
+    //     return res.status(201).json({message:'Revision eliminada'})
+    // };
+
     static deleteRevision = async (req:Request,res:Response) => {
+        let revision;
         const {id} = req.params;
         const revisionRepository = getRepository(sgcsrevpprevision);
-        let revision: sgcsrevpprevision;
         try{
             revision = await revisionRepository.findOneOrFail(id);
+            revision.REVestado = false
         }
         catch(e){
-            return res.status(404).json({message:'La revision no existe'});
+            return res.status(404).json({message:'La revision no fue encontrado'});
         }
-        revisionRepository.delete(id);
-        return res.status(201).json({message:'Revision eliminada'})
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(revision,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await revisionRepository.save(revision)
+        }
+        catch(e){
+            return res.status(404).json({message:'La revision ya existe'});
+        }
+        res.status(201).json({message:'Revision desactivado'})
     };
 }
 

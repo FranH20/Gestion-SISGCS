@@ -8,7 +8,7 @@ export class EtapaController {
         const etapaRepository = getRepository(sgcsetapetapa);
         let etapas;
         try {
-            etapas = await etapaRepository.find();
+            etapas = await etapaRepository.find({where:{"ETAestado":1}});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -35,6 +35,7 @@ export class EtapaController {
         const {ETAnombre,met} = req.body;
         const etapa = new sgcsetapetapa();
         etapa.ETAnombre = ETAnombre
+        etapa.ETAestado = true
         etapa.met = met
 
         const validationOpt = {validationError:{target:false,value:false}};
@@ -80,18 +81,44 @@ export class EtapaController {
         res.status(201).json({message:'Etapa actualizado'})
     };
     
+    
+    // static deleteEtapa = async (req:Request,res:Response) => {
+    //     const {id} = req.params;
+    //     const etapaRepository = getRepository(sgcsetapetapa);
+    //     let etapa: sgcsetapetapa;
+    //     try{
+    //         etapa = await etapaRepository.findOneOrFail(id);
+    //     }
+    //     catch(e){
+    //         return res.status(404).json({message:'La etapa no existe'});
+    //     }
+    //     etapaRepository.delete(id);
+    //     return res.status(201).json({message:'Etapa eliminada'})
+    // };
+
     static deleteEtapa = async (req:Request,res:Response) => {
+        let etapa;
         const {id} = req.params;
         const etapaRepository = getRepository(sgcsetapetapa);
-        let etapa: sgcsetapetapa;
         try{
             etapa = await etapaRepository.findOneOrFail(id);
+            etapa.ETAestado = false
         }
         catch(e){
-            return res.status(404).json({message:'La etapa no existe'});
+            return res.status(404).json({message:'La etapa no fue encontrado'});
         }
-        etapaRepository.delete(id);
-        return res.status(201).json({message:'Etapa eliminada'})
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(etapa,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await etapaRepository.save(etapa)
+        }
+        catch(e){
+            return res.status(404).json({message:'La etapa ya existe'});
+        }
+        res.status(201).json({message:'Etapa desactivada'})
     };
 }
 

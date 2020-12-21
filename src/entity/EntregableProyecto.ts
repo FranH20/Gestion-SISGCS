@@ -20,6 +20,9 @@ export class sgcsprepentregableproyecto{
     @MaxLength(251)
     PREarchivo: string;
 
+    @Column({ type: "boolean"})
+    PREestado: boolean;
+
     @ManyToOne(type => sgcspropproyecto, proyecto => proyecto.pre)
     @IsNotEmpty()
     @IsInt()

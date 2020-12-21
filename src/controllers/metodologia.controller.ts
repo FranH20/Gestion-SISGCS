@@ -8,7 +8,7 @@ export class MetodologiaController {
         const metodologiaRepository = getRepository(sgcsmetpmetodologia);
         let metodologias;
         try {
-            metodologias = await metodologiaRepository.find();
+            metodologias = await metodologiaRepository.find({where:{"METestado":1}});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -80,18 +80,43 @@ export class MetodologiaController {
         res.status(201).json({message:'Metodologia actualizado'})
     };
     
+    // static deleteMetodologia = async (req:Request,res:Response) => {
+    //     const {id} = req.params;
+    //     const metodologiaRepository = getRepository(sgcsmetpmetodologia);
+    //     let metodologia: sgcsmetpmetodologia;
+    //     try{
+    //         metodologia = await metodologiaRepository.findOneOrFail(id);
+    //     }
+    //     catch(e){
+    //         return res.status(404).json({message:'La metodologia no existe'});
+    //     }
+    //     metodologiaRepository.delete(id);
+    //     return res.status(201).json({message:'Metodologia eliminada'})
+    // };
+
     static deleteMetodologia = async (req:Request,res:Response) => {
+        let metodologia;
         const {id} = req.params;
         const metodologiaRepository = getRepository(sgcsmetpmetodologia);
-        let metodologia: sgcsmetpmetodologia;
         try{
             metodologia = await metodologiaRepository.findOneOrFail(id);
+            metodologia.METestado = false
         }
         catch(e){
-            return res.status(404).json({message:'La metodologia no existe'});
+            return res.status(404).json({message:'La metodologia no fue encontrado'});
         }
-        metodologiaRepository.delete(id);
-        return res.status(201).json({message:'Metodologia eliminada'})
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(metodologia,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await metodologiaRepository.save(metodologia)
+        }
+        catch(e){
+            return res.status(404).json({message:'La metodologia ya existe'});
+        }
+        res.status(201).json({message:'Metodologia fue desactivada'})
     };
 
 }

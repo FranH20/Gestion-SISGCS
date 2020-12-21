@@ -33,6 +33,9 @@ export class sgcssolpsolicitudcambio{
     @MaxLength(191)
     SOLestado: string;
 
+    @Column({ type: "boolean"})
+    SOLvalor: boolean;
+
     @ManyToOne(type => sgcsprupusuarioproyecto, usuarioproyecto => usuarioproyecto.sol)
     pru:sgcsprupusuarioproyecto
 

@@ -25,6 +25,9 @@ export class sgcsprupusuarioproyecto{
     @OneToMany(type => sgcstarptarea, usuarioproyecto => usuarioproyecto.pru)
     tar:sgcstarptarea[]
 
+    @Column({ type: "boolean"})
+    PRUestado: boolean;
+
     @Column()
     @CreateDateColumn()
     createdAt: Date;

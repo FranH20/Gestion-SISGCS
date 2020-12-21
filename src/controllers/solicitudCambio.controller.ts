@@ -8,7 +8,7 @@ export class SolicitudCambioController {
         const solicitudCambioRepository = getRepository(sgcssolpsolicitudcambio);
         let solicitudCambios;
         try {
-            solicitudCambios = await solicitudCambioRepository.find();
+            solicitudCambios = await solicitudCambioRepository.find({where:{"SOLvalor":1}});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -38,6 +38,7 @@ export class SolicitudCambioController {
         solicitudCambio.SOLfecha = SOLfecha
         solicitudCambio.SOLobjetivo = SOLobjetivo
         solicitudCambio.SOLdescripcion = SOLdescripcion
+        solicitudCambio.SOLvalor = true
         solicitudCambio.SOLimpacto = SOLimpacto
         solicitudCambio.SOLestado = SOLestado
         solicitudCambio.pru = pru
@@ -71,6 +72,7 @@ export class SolicitudCambioController {
             solicitudCambio.SOLobjetivo = SOLobjetivo
             solicitudCambio.SOLdescripcion = SOLdescripcion
             solicitudCambio.SOLimpacto = SOLimpacto
+            solicitudCambio.SOLvalor = true
             solicitudCambio.SOLestado = SOLestado
             solicitudCambio.pru = pru
             solicitudCambio.pro = pro
@@ -92,19 +94,44 @@ export class SolicitudCambioController {
         res.status(201).json({message:'SolicitudCambio actualizado'})
     };
     
+    // static deleteSolicitudCambio = async (req:Request,res:Response) => {
+    //     const {id} = req.params;
+    //     const solicitudCambioRepository = getRepository(sgcssolpsolicitudcambio);
+    //     let solicitudCambio: sgcssolpsolicitudcambio;
+    //     try{
+    //         solicitudCambio = await solicitudCambioRepository.findOneOrFail(id);
+    //     }
+    //     catch(e){
+    //         return res.status(404).json({message:'La SolicitudCambio no existe'});
+    //     }
+    //     solicitudCambioRepository.delete(id);
+    //     return res.status(201).json({message:'SolicitudCambio eliminada'})
+    // };
     static deleteSolicitudCambio = async (req:Request,res:Response) => {
+        let solicitudCambio;
         const {id} = req.params;
         const solicitudCambioRepository = getRepository(sgcssolpsolicitudcambio);
-        let solicitudCambio: sgcssolpsolicitudcambio;
         try{
             solicitudCambio = await solicitudCambioRepository.findOneOrFail(id);
+            solicitudCambio.SOLvalor = false
         }
         catch(e){
-            return res.status(404).json({message:'La SolicitudCambio no existe'});
+            return res.status(404).json({message:'La SolicitudCambio no fue encontrado'});
         }
-        solicitudCambioRepository.delete(id);
-        return res.status(201).json({message:'SolicitudCambio eliminada'})
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(solicitudCambio,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await solicitudCambioRepository.save(solicitudCambio)
+        }
+        catch(e){
+            return res.status(404).json({message:'La SolicitudCambio ya existe'});
+        }
+        res.status(201).json({message:'SolicitudCambio desactivada'})
     };
+    
 }
 
 export default SolicitudCambioController

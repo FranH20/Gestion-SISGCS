@@ -8,7 +8,7 @@ export class EntregableController {
         const entregableRepository = getRepository(sgcsetgpentregable);
         let entregables;
         try {
-            entregables = await entregableRepository.find();
+            entregables = await entregableRepository.find({where:{"ETGetapa":1}});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -80,18 +80,43 @@ export class EntregableController {
         res.status(201).json({message:'Entregable actualizado'})
     };
     
+    // static deleteEntregable = async (req:Request,res:Response) => {
+    //     const {id} = req.params;
+    //     const entregableRepository = getRepository(sgcsetgpentregable);
+    //     let entregable: sgcsetgpentregable;
+    //     try{
+    //         entregable = await entregableRepository.findOneOrFail(id);
+    //     }
+    //     catch(e){
+    //         return res.status(404).json({message:'El entregable no existe'});
+    //     }
+    //     entregableRepository.delete(id);
+    //     return res.status(201).json({message:'Entregable eliminada'})
+    // };
+
     static deleteEntregable = async (req:Request,res:Response) => {
+        let entregable;
         const {id} = req.params;
         const entregableRepository = getRepository(sgcsetgpentregable);
-        let entregable: sgcsetgpentregable;
         try{
             entregable = await entregableRepository.findOneOrFail(id);
+            entregable.ETGetapa = false
         }
         catch(e){
-            return res.status(404).json({message:'El entregable no existe'});
+            return res.status(404).json({message:'El entregable no fue encontrado'});
         }
-        entregableRepository.delete(id);
-        return res.status(201).json({message:'Entregable eliminada'})
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(entregable,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await entregableRepository.save(entregable)
+        }
+        catch(e){
+            return res.status(404).json({message:'El entregable ya existe'});
+        }
+        res.status(201).json({message:'Entregable desactivado'})
     };
 
     // static getListaEntregable = async (req:Request, res:Response) => {
