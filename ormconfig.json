@@ -1,10 +1,10 @@
 {
     "type": "mysql",
-    "host": "localhost",
+    "host": "u3r5w4ayhxzdrw87.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
     "port": 3306,
-    "username": "root",
-    "password": "",
-    "database": "db.sisgcs",
+    "username": "bb9ilybqzivwfd2f",
+    "password": "i1g2vy2qocyysiy9",
+    "database": "zsmzuvcusox2g0ss",
     "entities": ["dist/entity/**/*.js"],
     "synchronize":true
  }
