@@ -12,7 +12,7 @@ export class sgcsetgpentregable{
     ETGnombre: string;
 
     @Column({ type: "boolean"})
-    ETGetapa: boolean;
+    ETGestado: boolean;
 
     @ManyToOne(type => sgcsetapetapa, etapa => etapa.etg)
     @IsNotEmpty()

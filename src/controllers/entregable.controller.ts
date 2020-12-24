@@ -35,6 +35,7 @@ export class EntregableController {
         const {ETGnombre,eta} = req.body;
         const entregable = new sgcsetgpentregable();
         entregable.ETGnombre = ETGnombre
+        entregable.ETGestado = true
         entregable.eta = eta
 
         const validationOpt = {validationError:{target:false,value:false}};
@@ -61,6 +62,7 @@ export class EntregableController {
         try{
             entregable = await entregableRepository.findOneOrFail(id);
             entregable.ETGnombre = ETGnombre
+            entregable.ETGestado = true
             entregable.eta = eta
         }
         catch(e){
@@ -100,7 +102,7 @@ export class EntregableController {
         const entregableRepository = getRepository(sgcsetgpentregable);
         try{
             entregable = await entregableRepository.findOneOrFail(id);
-            entregable.ETGetapa = false
+            entregable.ETGestado = false
         }
         catch(e){
             return res.status(404).json({message:'El entregable no fue encontrado'});
