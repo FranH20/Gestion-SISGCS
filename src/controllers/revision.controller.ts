@@ -115,11 +115,6 @@ export class RevisionController {
         catch(e){
             return res.status(404).json({message:'La revision no fue encontrado'});
         }
-        const validationOpt = {validationError:{target:false,value:false}};
-        const errors = await validate(revision,validationOpt);
-        if (errors.length > 0){
-            return res.status(400).json(errors);
-        }
         try{
             await revisionRepository.save(revision)
         }

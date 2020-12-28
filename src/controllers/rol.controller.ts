@@ -105,11 +105,6 @@ export class RolController {
         catch(e){
             return res.status(404).json({message:'La rol no fue encontrado'});
         }
-        const validationOpt = {validationError:{target:false,value:false}};
-        const errors = await validate(rol,validationOpt);
-        if (errors.length > 0){
-            return res.status(400).json(errors);
-        }
         try{
             await rolRepository.save(rol)
         }

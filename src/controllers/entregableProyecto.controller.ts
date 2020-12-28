@@ -113,11 +113,6 @@ export class EntregableProyectoController {
         catch(e){
             return res.status(404).json({message:'El EntregableProyecto no fue encontrado'});
         }
-        const validationOpt = {validationError:{target:false,value:false}};
-        const errors = await validate(entregableProyecto,validationOpt);
-        if (errors.length > 0){
-            return res.status(400).json(errors);
-        }
         try{
             await entregableProyectoRepository.save(entregableProyecto)
         }

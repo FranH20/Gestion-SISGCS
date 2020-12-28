@@ -118,11 +118,6 @@ export class SolicitudCambioController {
         catch(e){
             return res.status(404).json({message:'La SolicitudCambio no fue encontrado'});
         }
-        const validationOpt = {validationError:{target:false,value:false}};
-        const errors = await validate(solicitudCambio,validationOpt);
-        if (errors.length > 0){
-            return res.status(400).json(errors);
-        }
         try{
             await solicitudCambioRepository.save(solicitudCambio)
         }

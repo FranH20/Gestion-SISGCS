@@ -9,7 +9,7 @@ export class UserController{
         const userRepository = getRepository(sgcsusutusuario);
         let users;
         try {
-            users = await userRepository.find({where:{"USUestado":1}});
+            users = await userRepository.find({where:{"USUestado":1},relations:['rol']});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -31,6 +31,7 @@ export class UserController{
             res.status(404).json({message:'No se encontro'});
         }
     }
+    
     
     static createUsers = async (req:Request,res:Response) => {
         const {USUCodigo,USUnombre,USUApellido,USUtipo,USUemail,USUcontrasenia,USUestado,rol} = req.body;
@@ -94,6 +95,30 @@ export class UserController{
         res.status(201).json({message:'Usuario actualizado'})
     }
     
+    static updateRolUsuario = async(req:Request,res:Response) => {
+        let user
+        const {id} = req.params;
+        const {rol} = req.body;
+        const userRepository = getRepository(sgcsusutusuario)
+        try{
+            user = await userRepository.findOneOrFail(id)
+            user.rol = rol
+        }catch(e){
+            return res.status(404).json({message:'El usuario no fue encontrado'});
+        }
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(user,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await userRepository.save(user)
+        }
+        catch(e){
+            return res.status(404).json({message:'El usuario no se pudo guardar'});
+        }
+        res.status(201).json({message:'Rol del usuario actualizado'})
+    }
     // static deleteUser = async (req:Request,res:Response) => {
     //     const {id} = req.params;
     //     const userRepository = getRepository(sgcsusutusuario);
@@ -117,11 +142,6 @@ export class UserController{
         }
         catch(e){
             return res.status(404).json({message:'El usuario no fue encontrado'});
-        }
-        const validationOpt = {validationError:{target:false,value:false}};
-        const errors = await validate(user,validationOpt);
-        if (errors.length > 0){
-            return res.status(400).json(errors);
         }
         try{
             await userRepository.save(user)

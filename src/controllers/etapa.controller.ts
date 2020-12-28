@@ -8,7 +8,7 @@ export class EtapaController {
         const etapaRepository = getRepository(sgcsetapetapa);
         let etapas;
         try {
-            etapas = await etapaRepository.find({where:{"ETAestado":1}});
+            etapas = await etapaRepository.find({where:{"ETAestado":1},relations:['met']});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -106,11 +106,6 @@ export class EtapaController {
         }
         catch(e){
             return res.status(404).json({message:'La etapa no fue encontrado'});
-        }
-        const validationOpt = {validationError:{target:false,value:false}};
-        const errors = await validate(etapa,validationOpt);
-        if (errors.length > 0){
-            return res.status(400).json(errors);
         }
         try{
             await etapaRepository.save(etapa)

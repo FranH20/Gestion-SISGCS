@@ -105,11 +105,6 @@ export class MetodologiaController {
         catch(e){
             return res.status(404).json({message:'La metodologia no fue encontrado'});
         }
-        const validationOpt = {validationError:{target:false,value:false}};
-        const errors = await validate(metodologia,validationOpt);
-        if (errors.length > 0){
-            return res.status(400).json(errors);
-        }
         try{
             await metodologiaRepository.save(metodologia)
         }

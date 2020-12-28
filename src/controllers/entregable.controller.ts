@@ -8,7 +8,7 @@ export class EntregableController {
         const entregableRepository = getRepository(sgcsetgpentregable);
         let entregables;
         try {
-            entregables = await entregableRepository.find({where:{"ETGetapa":1}});
+            entregables = await entregableRepository.find({where:{"ETGestado":1},relations:['eta']});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -106,11 +106,6 @@ export class EntregableController {
         }
         catch(e){
             return res.status(404).json({message:'El entregable no fue encontrado'});
-        }
-        const validationOpt = {validationError:{target:false,value:false}};
-        const errors = await validate(entregable,validationOpt);
-        if (errors.length > 0){
-            return res.status(400).json(errors);
         }
         try{
             await entregableRepository.save(entregable)
