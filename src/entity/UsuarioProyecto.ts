@@ -1,5 +1,5 @@
 import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, UpdateDateColumn,CreateDateColumn, ManyToMany} from 'typeorm'
-import {MaxLength} from 'class-validator'
+import {MaxLength,IsNotEmpty,IsInt} from 'class-validator'
 import {sgcsusutusuario} from './User'
 import {sgcspropproyecto} from './Proyecto'
 import {sgcssolpsolicitudcambio} from './SolicitudCambio'
@@ -11,9 +11,13 @@ export class sgcsprupusuarioproyecto{
     id: number;
 
     @ManyToOne(type => sgcsusutusuario, usuario => usuario.pru)
+    @IsNotEmpty()
+    @IsInt()
     usu:sgcsusutusuario
 
     @ManyToOne(type => sgcspropproyecto, proyecto => proyecto.pru)
+    @IsNotEmpty()
+    @IsInt()
     pro:sgcspropproyecto
     
     @OneToMany(type => sgcssolpsolicitudcambio, solicitudCambio => solicitudCambio.pru)

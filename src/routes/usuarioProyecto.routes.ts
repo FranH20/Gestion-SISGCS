@@ -4,6 +4,9 @@ import {checkTipo} from '../middleware/tipo'
 import {checkJwt} from '../middleware/jwt'
 const router = Router()
 
+
+router.get('/miembro/:id',[checkJwt,checkTipo([1,2,3,5])],usuarioProyectoController.getMiembroxProyecto);
+router.get('/proyecto/:id',[checkJwt,checkTipo([1,2,3,5])],usuarioProyectoController.getProyectoxMiembro);
 router.post('/',[checkJwt,checkTipo([1])],usuarioProyectoController.createUsuarioProyecto);
 router.put('/:id',[checkJwt,checkTipo([1])],usuarioProyectoController.updateUsuarioProyecto);
 router.delete('/:id',[checkJwt,checkTipo([1])],usuarioProyectoController.deleteUsuarioProyecto);

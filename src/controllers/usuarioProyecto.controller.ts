@@ -5,6 +5,49 @@ import {validate} from 'class-validator'
 
 export class UsuarioProyectoController {
 
+    static getMiembroxProyecto = async (req:Request,res:Response) => {
+        const {id} = req.params;
+        const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);
+        let proyectos;
+        try {
+            proyectos = await usuarioProyectoRepository.find({where:{"usu":id},relations:['usu','pro']});
+        } catch(e) {
+            return res.status(404).json({message:'Algo esta mal!'});
+        }
+        if (proyectos.length > 0){
+            res.send(proyectos);
+        }else{
+            return res.status(404).json({message:'No se encontro nada!'});
+        }
+
+    }
+
+    static getProyectoxMiembro = async (req:Request,res:Response) => {
+        const {id} = req.params;
+        const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);
+        let proyectos;
+        try {
+            proyectos = await usuarioProyectoRepository.find({relations:['usu','pro'],where:{pro:id,PRUestado:1}});
+        } catch(e) {
+            console.log(e)
+            return res.status(404).json({message:'Algo esta mal!'});
+        }
+        if (proyectos.length <= 0){
+            return res.status(404).json({message:'No se encontro nada!'});
+        }
+        let arrayEstudiantes: any[] = []
+        proyectos.map(e => arrayEstudiantes.push(e.usu))
+        let jsonFinal = {
+            "usu":arrayEstudiantes,
+            "pro":proyectos[0].pro
+        }
+        try {
+            res.send(jsonFinal);
+        } catch (e) {
+            return res.status(404).json({message:'Algo ocurrio en el camino'});
+        }
+    }
+
     static createUsuarioProyecto = async (req:Request,res:Response) => {
         const {usu,pro} = req.body;
         const usuarioProyecto = new sgcsprupusuarioproyecto();

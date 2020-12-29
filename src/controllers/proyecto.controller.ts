@@ -30,6 +30,8 @@ export class ProyectoController {
             res.status(404).json({message:'No se encontro'});
         }
     };
+
+    
     
     static createProyecto = async (req:Request,res:Response) => {
         const {PROnombre,PROdescripcion,PROestado,PROfechainicio,PROfechafin} = req.body;

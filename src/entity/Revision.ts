@@ -1,5 +1,5 @@
 import {Entity, Column, PrimaryGeneratedColumn, OneToMany,ManyToOne, UpdateDateColumn,CreateDateColumn} from 'typeorm'
-import {MaxLength} from 'class-validator'
+import {MaxLength,IsNotEmpty,IsInt} from 'class-validator'
 import {sgcsprepentregableproyecto} from './EntregableProyecto'
 @Entity()
 export class sgcsrevpprevision{
@@ -29,6 +29,8 @@ export class sgcsrevpprevision{
     REVdetalle: string;
 
     @ManyToOne(type => sgcsprepentregableproyecto, entregableProyecto => entregableProyecto.pro)
+    @IsNotEmpty()
+    @IsInt()
     pre:sgcsprepentregableproyecto
 
     @Column()
