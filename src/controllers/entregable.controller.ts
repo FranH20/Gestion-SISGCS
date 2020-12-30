@@ -30,6 +30,17 @@ export class EntregableController {
             res.status(404).json({message:'No se encontro'});
         }
     };
+
+    static getEntrablesxEtapa = async (req:Request, res:Response) => {
+        const { id } = req.params;
+        const entregableRepository = getRepository(sgcsetgpentregable);
+        try{
+            const entregable = await entregableRepository.find({where:{"eta":id,"ETGestado":1}});
+            res.send(entregable);
+        } catch(e){
+            res.status(404).json({message:'No se encontro'});
+        }
+    }
     
     static createEntregable = async (req:Request,res:Response) => {
         const {ETGnombre,eta} = req.body;

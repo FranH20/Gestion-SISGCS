@@ -30,6 +30,17 @@ export class EtapaController {
             res.status(404).json({message:'No se encontro'});
         }
     };
+
+    static getEtapasxMetodologia = async (req:Request, res:Response) => {
+        const { id } = req.params;
+        const etapaRepository = getRepository(sgcsetapetapa);
+        try{
+            const etapa = await etapaRepository.find({where:{"met":id,"ETAestado":1}});
+            res.send(etapa);
+        } catch(e){
+            res.status(404).json({message:'No se encontro'});
+        }
+    }
     
     static createEtapa = async (req:Request,res:Response) => {
         const {ETAnombre,met} = req.body;

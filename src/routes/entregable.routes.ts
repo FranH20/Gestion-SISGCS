@@ -6,6 +6,7 @@ const router = Router()
 
 router.get('/',[checkJwt,checkTipo([1])],EntregableController.getEntregables);
 router.get('/:id',[checkJwt,checkTipo([1])],EntregableController.getEntregable);
+router.get('/etapa/:id',[checkJwt,checkTipo([1])],EntregableController.getEntrablesxEtapa);
 //router.get('/entregables',EntregableController.getListaEntregable)
 router.post('/',[checkJwt,checkTipo([1])],EntregableController.createEntregable);
 router.put('/:id',[checkJwt,checkTipo([1])],EntregableController.updateEntregable);
