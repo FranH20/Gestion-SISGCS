@@ -8,7 +8,7 @@ export class ProyectoController {
         const proyectoRepository = getRepository(sgcspropproyecto);
         let proyectos;
         try {
-            proyectos = await proyectoRepository.find({where:{"PROvalor":1}});
+            proyectos = await proyectoRepository.find({where:{"PROvalor":1}, relations:["met"]});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }
@@ -34,7 +34,7 @@ export class ProyectoController {
     
     
     static createProyecto = async (req:Request,res:Response) => {
-        const {PROnombre,PROdescripcion,PROestado,PROfechainicio,PROfechafin} = req.body;
+        const {PROnombre,PROdescripcion,PROestado,PROfechainicio,PROfechafin,met} = req.body;
         const proyecto = new sgcspropproyecto();
         proyecto.PROnombre = PROnombre
         proyecto.PROdescripcion = PROdescripcion
@@ -42,6 +42,7 @@ export class ProyectoController {
         proyecto.PROvalor = true
         proyecto.PROfechainicio = PROfechainicio
         proyecto.PROfechafin = PROfechafin
+        proyecto.met = met
 
         const validationOpt = {validationError:{target:false,value:false}};
         const errors = await validate(proyecto,validationOpt);
@@ -66,7 +67,7 @@ export class ProyectoController {
     static updateProyecto = async (req:Request,res:Response) => {
         let proyecto;
         const {id} = req.params;
-        const {PROnombre,PROdescripcion,PROestado,PROfechainicio,PROfechafin} = req.body;
+        const {PROnombre,PROdescripcion,PROestado,PROfechainicio,PROfechafin,met} = req.body;
         const proyectoRepository = getRepository(sgcspropproyecto);
         try{
             proyecto = await proyectoRepository.findOneOrFail(id);
@@ -76,6 +77,7 @@ export class ProyectoController {
             proyecto.PROvalor = true
             proyecto.PROfechainicio = PROfechainicio
             proyecto.PROfechafin = PROfechafin
+            proyecto.met = met
         }
         catch(e){
             return res.status(404).json({message:'La proyecto no fue encontrado'});

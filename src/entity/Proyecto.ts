@@ -1,8 +1,10 @@
 import {Entity, Column, PrimaryGeneratedColumn, OneToMany,ManyToOne, UpdateDateColumn,CreateDateColumn} from 'typeorm'
-import {MaxLength} from 'class-validator'
+import {MaxLength,IsNotEmpty,IsInt} from 'class-validator'
 import {sgcsprupusuarioproyecto} from './UsuarioProyecto'
 import {sgcssolpsolicitudcambio} from './SolicitudCambio'
 import {sgcsprepentregableproyecto} from './EntregableProyecto'
+import {sgcsmetpmetodologia} from './Metodologia'
+
 @Entity()
 export class sgcspropproyecto{
     @PrimaryGeneratedColumn({ type: "int"})
@@ -28,6 +30,11 @@ export class sgcspropproyecto{
 
     @Column({ type: "boolean"})
     PROvalor: boolean;
+
+    @ManyToOne(type => sgcsmetpmetodologia, metodologia => metodologia.pro)
+    @IsNotEmpty()
+    @IsInt()
+    met:sgcsmetpmetodologia
 
     @OneToMany(type => sgcsprupusuarioproyecto, usuarioproyecto => usuarioproyecto.pro)
     pru:sgcsprupusuarioproyecto[]
