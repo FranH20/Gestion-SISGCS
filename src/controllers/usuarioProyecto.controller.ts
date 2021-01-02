@@ -6,11 +6,11 @@ import {validate} from 'class-validator'
 export class UsuarioProyectoController {
 
     static getMiembroxProyecto = async (req:Request,res:Response) => {
-        const {id} = req.params;
+        const {userId} = res.locals.jwtPayload;
         const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);
         let proyectos;
         try {
-            proyectos = await usuarioProyectoRepository.find({where:{"usu":id},relations:['usu','pro']});
+            proyectos = await usuarioProyectoRepository.find({where:{"usu":userId},relations:['usu','pro']});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }

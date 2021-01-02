@@ -26,6 +26,7 @@ class AuthController {
         res.json({message:'OK',token, userTipo: usuario.USUtipo});
     }
     static profile = async (req: Request, res: Response) => {
+        console.log(res.locals.jwtPayload)
         const {userId,username,email} = res.locals.jwtPayload;
         res.json({userId,username,email})
     }
