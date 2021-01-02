@@ -2,23 +2,26 @@ import {Request,Response} from 'express'
 import {getRepository} from 'typeorm'
 import {sgcsprupusuarioproyecto} from '../entity/UsuarioProyecto'
 import {validate} from 'class-validator'
+import {sgcspropproyecto} from '../entity/Proyecto'
 
 export class UsuarioProyectoController {
 
     static getMiembroxProyecto = async (req:Request,res:Response) => {
         const {userId} = res.locals.jwtPayload;
-        const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);
+        const usuarioProyectoRepository = getRepository(sgcspropproyecto);
         let proyectos;
         try {
-            proyectos = await usuarioProyectoRepository.find({where:{"usu":userId},relations:['usu','pro']});
+            // proyectos = await usuarioProyectoRepository.find({where:{"usu":userId},relations:['usu','pro']});
+            proyectos = await usuarioProyectoRepository.
+            createQueryBuilder('proyecto')
+            .leftJoinAndMapMany('proyecto.usuarioProyecto','proyecto.pru','pru')
+            .where('pru.usu =:id ', {id:userId})
+            .getMany();
         } catch(e) {
+            console.log(e.message)
             return res.status(404).json({message:'Algo esta mal!'});
         }
-        if (proyectos.length > 0){
-            res.send(proyectos);
-        }else{
-            return res.status(404).json({message:'No se encontro nada!'});
-        }
+        res.send(proyectos);
 
     }
 
