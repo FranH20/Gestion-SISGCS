@@ -1,5 +1,5 @@
 import {Entity, Column, ManyToOne,PrimaryGeneratedColumn,OneToMany, UpdateDateColumn,CreateDateColumn} from 'typeorm'
-import {IsNotEmpty,IsInt,Min,MaxLength} from 'class-validator'
+import {IsNotEmpty,IsInt,Min,MaxLength, Max} from 'class-validator'
 import {sgcsprupusuarioproyecto} from './UsuarioProyecto'
 import {sgcspropproyecto} from './Proyecto'
 import {sgcsetgpentregable} from './Entregable'
@@ -10,10 +10,11 @@ export class sgcsprepentregableproyecto{
     @PrimaryGeneratedColumn({ type: "int"})
     id: number;
     
-    @Column({ type: "int", width: 3 , unique:true})
+    @Column({ type: "int", width: 3 })
     @IsNotEmpty()
     @IsInt()
-    @Min(3)
+    @Min(0)
+    @Max(100)
     PREprogreso: number;
 
     @Column({ type: "varchar", length: 250 })
