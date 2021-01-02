@@ -8,7 +8,7 @@ export class EntregableProyectoController {
         const entregableProyectoRepository = getRepository(sgcsprepentregableproyecto);
         let entregableProyectos;
         try {
-            entregableProyectos = await entregableProyectoRepository.find({where:{"PREestado":1}});
+            entregableProyectos = await entregableProyectoRepository.find({where:{"PREestado":1},relations:['pro','etg','pru']});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }

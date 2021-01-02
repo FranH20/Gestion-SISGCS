@@ -8,7 +8,7 @@ export class TareaController {
         const tareaRepository = getRepository(sgcstarptarea);
         let tareas;
         try {
-            tareas = await tareaRepository.find({where:{"TARvalor":1}});
+            tareas = await tareaRepository.find({where:{"TARvalor":1},relations:['pre','pru']});
         } catch(e) {
             return res.status(404).json({message:'Algo esta mal!'});
         }

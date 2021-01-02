@@ -5,6 +5,7 @@ import {checkJwt} from '../middleware/jwt'
 const router = Router()
 
 router.get('/',[checkJwt,checkTipo([1,2,3,5])],ProyectoController.getProyectos);
+router.get('/jefe/',[checkJwt,checkTipo([1,2,3,5])],ProyectoController.getProyectosConJefe);
 router.get('/:id',[checkJwt,checkTipo([1,2,3,5])],ProyectoController.getProyecto);
 router.post('/',[checkJwt,checkTipo([1])],ProyectoController.createProyecto);
 router.put('/:id',[checkJwt,checkTipo([1])],ProyectoController.updateProyecto);

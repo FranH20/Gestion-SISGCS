@@ -2,6 +2,7 @@ import {Request,Response} from 'express'
 import {getRepository} from 'typeorm'
 import {sgcspropproyecto} from '../entity/Proyecto'
 import {validate} from 'class-validator'
+import {sgcsprupusuarioproyecto} from '../entity/UsuarioProyecto'
 
 export class ProyectoController {
     static getProyectos = async (req: Request, res:Response) => {
@@ -17,6 +18,50 @@ export class ProyectoController {
         }else{
             return res.status(404).json({message:'No se encontro nada!'});
         }
+        
+    };
+
+    static getProyectosConJefe = async (req: Request, res:Response) => {
+        const proyectoRepository = getRepository(sgcspropproyecto);
+        let proyectos;
+        try {
+            // proyectos = await proyectoRepository.find({where:{"PROvalor":1}, relations:["met"]});
+            // proyectos = await proyectoRepository.
+            // createQueryBuilder('proyecto').
+            // innerJoin("sgcsprupusuarioproyecto","usuarioProyecto", "proyecto.id = usuarioProyecto.pro").
+            // innerJoin("sgcsusutusuario","usuario", "usuario.id = usuarioProyecto.usu").
+            // select("proyecto.PROnombre","proyecto.PROdescripcion").
+            // where("usuario.USUtipo =:USUtipo ",{USUtipo:2}).
+            // groupBy("proyecto.id").
+            // getMany();
+            // proyectos = await proyectoRepository
+            // .createQueryBuilder('usuarioProyecto')
+            // .leftJoinAndSelect("usuarioProyecto.pro", "pro")
+            // .leftJoinAndSelect("usuarioProyecto.usu", "usu")
+            // .where("usu.USUtipo = 2")
+            // .getMany();
+            // proyectos = await proyectoRepository
+            // .createQueryBuilder('usuarioProyecto')
+            // .leftJoinAndMapMany("usuarioProyecto.proyecto","usuarioProyecto.pro", "pro")
+            // .leftJoinAndMapMany("usuarioProyecto.usuarios","usuarioProyecto.usu", "usu")
+            // .where("usu.USUtipo = 2")
+            // .getMany();
+            proyectos = await proyectoRepository
+            .createQueryBuilder('proyecto')
+            .leftJoinAndSelect('proyecto.met',"met")
+            .leftJoinAndMapOne("proyecto.jefe","proyecto.pru", "pru")
+            .leftJoinAndMapOne("pru.usuario","pru.usu", "usu")
+            .where("usu.USUtipo = 2")
+            .getMany();
+        } catch(e) {
+            return res.status(404).json({message:'Algo esta mal!'});
+        }
+        res.send(proyectos);
+        // if (proyectos.length > 0){
+            
+        // }else{
+        //     return res.status(404).json({message:'No se encontro nada!'});
+        // }
         
     };
 
