@@ -31,6 +31,8 @@ export class EntregableProyectoController {
             createQueryBuilder('entregable')
             .leftJoinAndMapOne('entregable.entproyecto','entregable.pre','pre')
             .leftJoinAndMapOne('pre.usuario','pre.pru','pru')
+            .leftJoinAndMapOne('entregable.etapa','entregable.eta','eta')
+            .leftJoinAndMapOne('eta.metodologia','eta.met','met')
             .where('pru.usu =:id ', {id:userId})
             .getMany();
         } catch(e) {
