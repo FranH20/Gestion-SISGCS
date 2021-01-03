@@ -1,6 +1,7 @@
 import {Request,Response} from 'express'
 import {getRepository} from 'typeorm'
 import {sgcsprepentregableproyecto} from '../entity/EntregableProyecto'
+import {sgcsetgpentregable} from '../entity/Entregable'
 import {validate} from 'class-validator'
 
 export class EntregableProyectoController {
@@ -20,6 +21,24 @@ export class EntregableProyectoController {
         
     };
 
+    static getEntregablexMiembro = async (req:Request, res: Response) => {
+        const {userId} = res.locals.jwtPayload;
+        const entregableProyectos = getRepository(sgcsetgpentregable);
+        let entregable;
+        try {
+            // proyectos = await usuarioProyectoRepository.find({where:{"usu":userId},relations:['usu','pro']});
+            entregable = await entregableProyectos.
+            createQueryBuilder('entregable')
+            .leftJoinAndMapOne('entregable.entproyecto','entregable.pre','pre')
+            .leftJoinAndMapOne('pre.usuario','pre.pru','pru')
+            .where('pru.usu =:id ', {id:userId})
+            .getMany();
+        } catch(e) {
+            console.log(e.message)
+            return res.status(404).json({message:'Algo esta mal!'});
+        }
+        res.send(entregable);
+    }
     static getEntregableProyecto = async (req:Request,res:Response) => {
         const { id } = req.params;
         const entregableProyectoRepository = getRepository(sgcsprepentregableproyecto);

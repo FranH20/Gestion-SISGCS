@@ -68,12 +68,19 @@ export class ProyectoController {
     static getProyecto = async (req:Request,res:Response) => {
         const { id } = req.params;
         const proyectoRepository = getRepository(sgcspropproyecto);
+        let proyecto
         try{
-            const proyecto = await proyectoRepository.findOne(id);
-            res.send(proyecto);
+            proyecto = await proyectoRepository
+            .createQueryBuilder('proyecto')
+            .leftJoinAndSelect('proyecto.met','met')
+            .leftJoinAndMapOne("proyecto.jefe","proyecto.pru", "pru")
+            .leftJoinAndMapOne("pru.usuario","pru.usu", "usu")
+            .where("proyecto.id =:id",{id:id})
+            .getMany();
         } catch(e){
             res.status(404).json({message:'No se encontro'});
         }
+        res.send(proyecto);
     };
 
     

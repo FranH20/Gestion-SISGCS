@@ -30,7 +30,23 @@ export class TareaController {
             res.status(404).json({message:'No se encontro'});
         }
     };
-    
+    static getTareaxMiembro = async(req: Request, res:Response) => {
+        const {userId} = res.locals.jwtPayload;
+        const tareaRepository = getRepository(sgcstarptarea);
+        let tarea;
+        try {
+            // proyectos = await usuarioProyectoRepository.find({where:{"usu":userId},relations:['usu','pro']});
+            tarea = await tareaRepository.
+            createQueryBuilder('tarea')
+            .leftJoinAndSelect('tarea.pru','pru')
+            .where('pru.usu =:id ', {id:userId})
+            .getMany();
+        } catch(e) {
+            console.log(e.message)
+            return res.status(404).json({message:'Algo esta mal!'});
+        }
+        res.send(tarea);
+    }
     static createTarea = async (req:Request,res:Response) => {
         const {TARnombre,TARfechainicio,TARfechafin,TARdescripcion,TARestado,TARprogreso,TARarchivoequipo,pre,pru} = req.body;
         const tarea = new sgcstarptarea();
