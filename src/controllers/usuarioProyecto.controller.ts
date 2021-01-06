@@ -30,22 +30,20 @@ export class UsuarioProyectoController {
         const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);
         let proyectos;
         try {
-            proyectos = await usuarioProyectoRepository.find({relations:['usu','pro'],where:{pro:id,PRUestado:1}});
+            // proyectos = await usuarioProyectoRepository.find({relations:['usu','pro'],where:{pro:id,PRUestado:1}});
+            proyectos = await usuarioProyectoRepository.createQueryBuilder('usuarioProyecto')
+            .leftJoinAndMapOne('usuarioProyecto.usuario','usuarioProyecto.usu','usu')
+            .leftJoinAndMapOne('usuarioProyecto.proyecto','usuarioProyecto.pro','pro')
+            .where('usuarioProyecto.pro =:id ', {id:id})
+            .where('usuarioProyecto.PRUestado = 1')
+            .where('usu.USUtipo != 5')
+            .getMany();
         } catch(e) {
             console.log(e)
             return res.status(404).json({message:'Algo esta mal!'});
         }
-        if (proyectos.length <= 0){
-            return res.status(404).json({message:'No se encontro nada!'});
-        }
-        let arrayEstudiantes: any[] = []
-        proyectos.map(e => arrayEstudiantes.push(e.usu))
-        let jsonFinal = {
-            "usu":arrayEstudiantes,
-            "pro":proyectos[0].pro
-        }
         try {
-            res.send(jsonFinal);
+            res.send(proyectos);
         } catch (e) {
             return res.status(404).json({message:'Algo ocurrio en el camino'});
         }
