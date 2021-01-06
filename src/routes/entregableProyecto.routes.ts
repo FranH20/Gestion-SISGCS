@@ -6,6 +6,7 @@ const router = Router()
 
 router.get('/',[checkJwt,checkTipo([1,2])],EntregableProyectoController.getEntregableProyectos);
 router.get('/:id',[checkJwt,checkTipo([1,2])],EntregableProyectoController.getEntregableProyecto);
+router.get('/proyecto/:id',[checkJwt,checkTipo([1,2])],EntregableProyectoController.getEntregablesxProyecto);
 router.post('/miembro/',[checkJwt,checkTipo([1,2])],EntregableProyectoController.getEntregablexMiembro);
 router.post('/',[checkJwt,checkTipo([1,2])],EntregableProyectoController.createEntregableProyecto);
 router.put('/:id',[checkJwt,checkTipo([1,2])],EntregableProyectoController.updateEntregableProyecto);

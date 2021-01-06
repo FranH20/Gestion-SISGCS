@@ -51,7 +51,16 @@ export class EntregableProyectoController {
             res.status(404).json({message:'No se encontro'});
         }
     };
-    
+    static getEntregablesxProyecto = async (req:Request,res:Response) => {
+        const { id } = req.params;
+        const entregableProyectoRepository = getRepository(sgcsprepentregableproyecto);
+        try{
+            const entregableProyecto = await entregableProyectoRepository.find({where:{"pro":id,'PREestado':1}});
+            res.send(entregableProyecto);
+        } catch(e){
+            res.status(404).json({message:'No se encontro'});
+        }
+    }
     static createEntregableProyecto = async (req:Request,res:Response) => {
         const {PREprogreso,PREarchivo,pro,etg,pru} = req.body;
         const entregableProyecto = new sgcsprepentregableproyecto();

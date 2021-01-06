@@ -25,6 +25,33 @@ export class UsuarioProyectoController {
 
     }
 
+    static getusuarioProyectoXProyecto = async (req:Request,res:Response) => {
+        const {id} = req.params;
+        const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);
+        let proyectos;
+        try {
+            // proyectos = await usuarioProyectoRepository.find({relations:['usu','pro'],where:{pro:id,PRUestado:1}});
+            proyectos = await usuarioProyectoRepository.find({relations:['usu','pro'],where:{pro:id,PRUestado:1}});
+        } catch(e) {
+            console.log(e)
+            return res.status(404).json({message:'Algo esta mal!'});
+        }
+        if (proyectos.length <= 0){	
+            return res.status(404).json({message:'No se encontro nada!'});	
+        }	
+        let arrayEstudiantes: any[] = []	
+        proyectos.map(e => arrayEstudiantes.push(e.usu))	
+        let jsonFinal = {	
+            "usu":arrayEstudiantes,	
+            "pro":proyectos[0].pro	
+        }
+        try {
+            res.send(jsonFinal);
+        }catch (e) {
+            return res.status(404).json({message:'Algo ocurrio en el camino'});
+        }
+    }
+
     static getProyectoxMiembro = async (req:Request,res:Response) => {
         const {id} = req.params;
         const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);
