@@ -34,9 +34,7 @@ export class UsuarioProyectoController {
             proyectos = await usuarioProyectoRepository.createQueryBuilder('usuarioProyecto')
             .leftJoinAndMapOne('usuarioProyecto.usuario','usuarioProyecto.usu','usu')
             .leftJoinAndMapOne('usuarioProyecto.proyecto','usuarioProyecto.pro','pro')
-            .where('usuarioProyecto.pro =:id ', {id:id})
-            .where('usuarioProyecto.PRUestado = 1')
-            .where('usu.USUtipo != 5')
+            .where('usuarioProyecto.pro =:id AND usuarioProyecto.PRUestado = 1 AND usu.USUtipo != 5', {id:id})
             .getMany();
         } catch(e) {
             console.log(e)
