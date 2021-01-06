@@ -60,12 +60,23 @@ export class UsuarioProyectoController {
             return res.status(400).json(errors);
         }
         
-        const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto);  
+        const usuarioProyectoRepository = getRepository(sgcsprupusuarioproyecto); 
+        let usuarioFinal; 
+        try{
+            usuarioFinal = await usuarioProyectoRepository.findOne({usu:usu,pro:pro})
+        }
+        catch(e){
+            console.log(e)
+            return res.status(409).json({message:'Algo inesperado fallo'});
+        }
+        if(usuarioFinal){
+            return res.status(409).json({message:'El Usuario ya esta asignado a ese proyecto'});
+        }
         try{
             await usuarioProyectoRepository.save(usuarioProyecto)
         }
         catch(e){
-            return res.status(409).json({message:'El UsuarioProyecto ya existe'});
+            return res.status(409).json({message:'El UsuarioProyecto no se pudo guardar'});
         }
         res.send('UsuarioProyecto creado');
     };
