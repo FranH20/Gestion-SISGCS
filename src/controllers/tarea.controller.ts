@@ -112,6 +112,32 @@ export class TareaController {
         res.status(201).json({message:'Tarea actualizada'})
     };
     
+    static updateTareaEnlace = async (req:Request,res:Response) => {
+        let tarea;
+        const {id} = req.params;
+        const {TARestado,TARarchivoequipo} = req.body;
+        const tareaRepository = getRepository(sgcstarptarea);
+        try{
+            tarea = await tareaRepository.findOneOrFail(id);
+            tarea.TARestado = TARestado
+            tarea.TARarchivoequipo = TARarchivoequipo
+        }
+        catch(e){
+            return res.status(404).json({message:'La tarea no fue encontrado'});
+        }
+        const validationOpt = {validationError:{target:false,value:false}};
+        const errors = await validate(tarea,validationOpt);
+        if (errors.length > 0){
+            return res.status(400).json(errors);
+        }
+        try{
+            await tareaRepository.save(tarea)
+        }
+        catch(e){
+            return res.status(404).json({message:'La tarea ya existe'});
+        }
+        res.status(201).json({message:'Tarea actualizada en conjunto con el enlace'})
+    }
     // static deleteTarea = async (req:Request,res:Response) => {
     //     const {id} = req.params;
     //     const tareaRepository = getRepository(sgcstarptarea);
